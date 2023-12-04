@@ -19,12 +19,15 @@ public class SampleDB : MonoBehaviour
     {
         // Run the method to create DB and Table
         CreateDB();
+        
         // Method to add a player info
         // **Note: This will add a record for this each time the script runs,
         // so typically you wouldn't have it here but instead triggered by a button or event,
         // otherwise you will have a ton of repeated info
+        AddPlayer("Lily", "Female");
 
         // Method to display the records to the console
+        DisplayInfo();
     }
 
     // Method to Create a table if it doesn't exist already
@@ -104,10 +107,17 @@ public class SampleDB : MonoBehaviour
                 {
                     while (reader.Read())
                     {
-                        // Show to console what is in field 
+                        // Show to console what is in field 'name', 'level', dan 'gender' for each row
+                        // for reader["xxxxxx"] - replace the xxxxxx with the field name you want to show
+                        // this will display as many times as there are records returned
+                        Debug.Log("Name: " + reader["name"] + "\nLevel: " + reader["level"]
+                            + "\nGender: " + reader["gender"] + "\n");
+
                     }
+                    reader.Close();
                 }
             }
+            connection.Close();
         }
     }
 }
