@@ -5,6 +5,9 @@ using System.Data;
 using Mono.Data.Sqlite;
 using IDbCommand = System.Data.IDbCommand;
 using IDbConnection = System.Data.IDbConnection;
+using System.Security.Cryptography;
+//using sRandom = System.Random;
+using System;
 
 // This is a test script from tutorial on SQLite
 public class SampleDB : MonoBehaviour
@@ -17,17 +20,32 @@ public class SampleDB : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        BetterRandomString();
         // Run the method to create DB and Table
-        CreateDB();
+        //CreateDB();
         
         // Method to add a player info
         // **Note: This will add a record for this each time the script runs,
         // so typically you wouldn't have it here but instead triggered by a button or event,
         // otherwise you will have a ton of repeated info
-        AddPlayer("Lily", "Female");
+        //AddPlayer("Abraham Lincoln", "Male");
 
         // Method to display the records to the console
-        DisplayInfo();
+        //DisplayInfo();
+    }
+
+    public static void BetterRandomString()
+    {
+        // create a stronger hash code using RNGCryptoServiceProvider
+        byte[] random = new byte[64];
+        RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+        // populate with random bytes
+        rng.GetBytes(random);
+
+        // convert random bytes to string
+        string randomBase64 = Convert.ToBase64String(random);
+        // display
+        Debug.Log("Random string: " + randomBase64);
     }
 
     // Method to Create a table if it doesn't exist already
@@ -119,5 +137,10 @@ public class SampleDB : MonoBehaviour
             }
             connection.Close();
         }
+    }
+
+    private void GenerateRandomID()
+    {
+
     }
 }
