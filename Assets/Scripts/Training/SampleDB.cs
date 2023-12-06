@@ -38,14 +38,20 @@ public class SampleDB : MonoBehaviour
     {
         // create a stronger hash code using RNGCryptoServiceProvider
         byte[] random = new byte[64];
+        byte[] randID = new byte[32];
         RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
         // populate with random bytes
         rng.GetBytes(random);
+        rng.GetBytes(randID);
 
         // convert random bytes to string
         string randomBase64 = Convert.ToBase64String(random);
+        string randomBase32 = Convert.ToBase64String(randID);
         // display
-        Debug.Log("Random string: " + randomBase64);
+        Debug.Log("Random string64: " + randomBase64);
+        Debug.Log("Random string32: " + randomBase32);
+        Debug.Log("Length of string64: " + randomBase64.Length);
+        Debug.Log("Length of string32: " + randomBase32.Length);
     }
 
     // Method to Create a table if it doesn't exist already
