@@ -145,8 +145,4 @@ public class SampleDB : MonoBehaviour
         }
     }
 
-    private void GenerateRandomID()
-    {
-
-    }
 }
