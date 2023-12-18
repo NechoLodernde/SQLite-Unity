@@ -9,7 +9,7 @@ using Con64 = System.Convert;
 
 public class PlayerDBScript : MonoBehaviour
 {
-    public static PlayerDBScript playerDBScriptInstance { get; private set; }
+    public static PlayerDBScript PlayerDBScriptInstance { get; private set; }
     public PlayerDataStruct playerStruct;
 
     private readonly string dbName = "/PlayerData.s3db";
@@ -24,7 +24,7 @@ public class PlayerDBScript : MonoBehaviour
         string filePath = filepath + dbName;
         conn = "URI=file:" + filePath;
 
-        playerDBScriptInstance = this;
+        PlayerDBScriptInstance = this;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -102,7 +102,27 @@ public class PlayerDBScript : MonoBehaviour
             sqlQuery = "UPDATE playerdata SET player_semester = '" + playerSemNew + 
                 "' WHERE playerID = '" + rawData.playerID + "';";
 
-            playerDBScriptInstance.playerStruct.list.ToArray()[0].playerSemester = playerSemNew;
+            PlayerDBScriptInstance.playerStruct.list.ToArray()[0].playerSemester = playerSemNew;
+
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
+            dbConnect.Close();
+        }
+    }
+
+    public void UpdateQuestID(string prevQuestID)
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            PlayerDataEntry rawData = ReturnPDE();
+            // Add reference string that will contain the new quest ID
+            string newQuestID = "ExampleNewID";
+
+            sqlQuery = "UPDATE playerdata SET active_quest_code = '" + newQuestID +
+                "' WHERE playerID = '" + rawData.playerID + "';";
+            PlayerDBScriptInstance.playerStruct.list.ToArray()[0].activeQuestCode = newQuestID;
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -128,7 +148,7 @@ public class PlayerDBScript : MonoBehaviour
     public PlayerDataEntry ReturnPDE()
     {
         PlayerDataEntry RawData;
-        RawData = playerDBScriptInstance.playerStruct.list.ToArray()[0];
+        RawData = PlayerDBScriptInstance.playerStruct.list.ToArray()[0];
         return RawData;
     }
 }

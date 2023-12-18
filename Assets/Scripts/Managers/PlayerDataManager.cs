@@ -10,8 +10,11 @@ public class PlayerDataManager : MonoBehaviour
 {
     public static PlayerDataManager PlayerDataInstance { get; private set; }
 
-    [SerializeField] private string objectID;
-    [SerializeField] private string filepath, prevPlayerName;
 
+    private void Awake()
+    {
+        PlayerDataInstance = this;
 
+        DontDestroyOnLoad(gameObject);
+    }
 }
