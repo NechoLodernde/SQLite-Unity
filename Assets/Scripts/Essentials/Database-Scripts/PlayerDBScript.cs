@@ -10,7 +10,6 @@ using Con64 = System.Convert;
 public class PlayerDBScript : MonoBehaviour
 {
     public static PlayerDBScript PlayerDBScriptInstance { get; private set; }
-    public PlayerDataStruct playerStruct;
 
     private readonly string dbName = "/PlayerData.s3db";
     private readonly string filepath = Application.dataPath + "/StreamingAssets/Database";
@@ -74,15 +73,9 @@ public class PlayerDBScript : MonoBehaviour
                 + pFaculty + "', '" + pStudyProgram + "', '" + pSemester + "', '"
                 + "IntroPKKMBQuestA1');";
 
-            PlayerDataEntry newEntry = new();
-            newEntry.playerID = randomPlayerID;
-            newEntry.playerName = pName;
-            newEntry.playerGender = pGender;
-            newEntry.playerFaculty = pFaculty;
-            newEntry.playerStudyProgram = pStudyProgram;
-            newEntry.playerSemester = pSemester;
-            newEntry.activeQuestCode = "IntroPKKMBQuestA1";
-            playerStruct.list.Add(newEntry);
+            PlayerDataManager.PlayerDataInstance.InsertNewData(randomPlayerID,
+                pName, pGender, pFaculty, pStudyProgram, pSemester, 
+                "IntroPKKMBQuestA1");
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -102,7 +95,7 @@ public class PlayerDBScript : MonoBehaviour
             sqlQuery = "UPDATE playerdata SET player_semester = '" + playerSemNew + 
                 "' WHERE playerID = '" + rawData.playerID + "';";
 
-            PlayerDBScriptInstance.playerStruct.list.ToArray()[0].playerSemester = playerSemNew;
+            PlayerDataManager.PlayerDataInstance.UpdateSemester(playerSemNew);
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -122,7 +115,8 @@ public class PlayerDBScript : MonoBehaviour
 
             sqlQuery = "UPDATE playerdata SET active_quest_code = '" + newQuestID +
                 "' WHERE playerID = '" + rawData.playerID + "';";
-            PlayerDBScriptInstance.playerStruct.list.ToArray()[0].activeQuestCode = newQuestID;
+
+            PlayerDataManager.PlayerDataInstance.UpdateQuestID(newQuestID);
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -148,20 +142,7 @@ public class PlayerDBScript : MonoBehaviour
     public PlayerDataEntry ReturnPDE()
     {
         PlayerDataEntry RawData;
-        RawData = PlayerDBScriptInstance.playerStruct.list.ToArray()[0];
+        RawData = PlayerDataManager.PlayerDataInstance.playerStruct.list.ToArray()[0];
         return RawData;
     }
-}
-
-[System.Serializable]
-public class PlayerDataStruct
-{
-    public List<PlayerDataEntry> list = new();
-}
-
-public class PlayerDataEntry
-{
-    public string playerID, playerName, playerFaculty, 
-        playerGender, playerStudyProgram, activeQuestCode;
-    public int playerSemester;
 }
