@@ -45,7 +45,24 @@ public class InventoryDBScript : MonoBehaviour
                 "[id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                 "[inventory_data_code] VARCHAR(100) NOT NULL UNIQUE, " +
                 "[inventory_data_name] VARCHAR(128) NOT NULL UNIQUE, " +
-                "";
+                "[inventory_data_type] VARCHAR(128) NOT NULL, " +
+                "[inventory_data_weight] DOUBLE PRECISION(100, 8) NOT NULL, " +
+                "[inventory_usable_code] INTEGER DEFAULT '0' NOT NULL);";
+
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
+            dbConnect.Close();
         }
+    }
+
+    // Method to create random string with length of 88
+    private string RandomBaseString64()
+    {
+        byte[] random = new byte[64];
+        RNGCrisp rng = new RNGCrisp();
+        rng.GetBytes(random);
+
+        string randomBase64 = Con64.ToBase64String(random);
+        return randomBase64;
     }
 }

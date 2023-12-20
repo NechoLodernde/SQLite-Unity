@@ -129,7 +129,7 @@ public class PlayerDBScript : MonoBehaviour
     {
         // Create a stronger hash code using RNGCryptoServiceProvider
         byte[] random = new byte[64];
-        RNGCrisp rng = new RNGCrisp();
+        RNGCrisp rng = new();
         // Populate with random bytes
         rng.GetBytes(random);
 
