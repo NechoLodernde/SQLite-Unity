@@ -83,6 +83,38 @@ public class PlayerDBScript : MonoBehaviour
         }
     }
 
+    public void LoadPlayer()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            sqlQuery = "SELECT * FROM playerdata;";
+            dbCommand.CommandText = sqlQuery;
+            dbReader = dbCommand.ExecuteReader();
+            // int.TryParse(ageField.text.ToString(), out int y);
+            // int pAge = y;
+            while (dbReader.Read())
+            {
+                string pID, pName, pGender, pFaculty, pStudyProgram,
+                    pActiveQuest;
+                int pSemester;
+                pID = "" + dbReader["player_id"];
+                pName = "" + dbReader["player_name"];
+                pGender = "" + dbReader["player_gender"];
+                pFaculty = "" + dbReader["player_faculty"];
+                pStudyProgram = "" + dbReader["player_study_program"];
+                pActiveQuest = "" + dbReader["active_quest_code"];
+
+                int.TryParse(("" + dbReader["player_semester"]), out int y);
+                pSemester = y;
+            }
+
+            dbReader.Close();
+        }
+        dbConnect.Close();
+    }
+
     public void UpdateSemester()
     {
         using (dbConnect = new SqliteConnection(conn))

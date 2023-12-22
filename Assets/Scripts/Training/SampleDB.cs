@@ -136,7 +136,6 @@ public class SampleDB : MonoBehaviour
                         // this will display as many times as there are records returned
                         Debug.Log("Name: " + reader["name"] + "\nLevel: " + reader["level"]
                             + "\nGender: " + reader["gender"] + "\n");
-
                     }
                     reader.Close();
                 }

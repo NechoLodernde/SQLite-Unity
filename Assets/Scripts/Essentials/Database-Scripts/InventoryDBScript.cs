@@ -55,6 +55,29 @@ public class InventoryDBScript : MonoBehaviour
         }
     }
 
+    public void AddItem(string iName, string iType, 
+        double iWeight, int iUse)
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            string randomInvID = RandomBaseString64();
+            sqlQuery = "INSERT INTO inventorydata (inventory_data_code, " +
+                "inventory_data_name, inventory_data_type, " +
+                "inventory_data_weight, inventory_usable_code) VALUES " +
+                "('" + randomInvID + "', '" + iName + "', '" + iType + "', '" +
+                iWeight + "', '" + iUse + "');";
+
+            InventoryDataManager.InventoryDataInstance.InsertNewData(randomInvID,
+                iName, iType, iWeight, iUse);
+
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
+            dbConnect.Close();
+        }
+    }
+
     // Method to create random string with length of 88
     private string RandomBaseString64()
     {
@@ -64,5 +87,12 @@ public class InventoryDBScript : MonoBehaviour
 
         string randomBase64 = Con64.ToBase64String(random);
         return randomBase64;
+    }
+
+    public InventoryDataEntry[] ReturnIDEArray()
+    {
+        InventoryDataEntry[] RawData;
+        RawData = InventoryDataManager.InventoryDataInstance.inventoryStruct.list.ToArray();
+        return RawData;
     }
 }
