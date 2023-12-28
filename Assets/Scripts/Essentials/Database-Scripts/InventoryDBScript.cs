@@ -34,7 +34,7 @@ public class InventoryDBScript : MonoBehaviour
         CreateDB();
     }
 
-    private void CreateDB()
+    public void CreateDB()
     {
         using (dbConnect = new SqliteConnection(conn))
         {
@@ -52,6 +52,39 @@ public class InventoryDBScript : MonoBehaviour
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
             dbConnect.Close();
+        }
+    }
+
+    public void DeleteDB()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+
+            sqlQuery = "DROP TABLE inventorydata;";
+
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
+            dbConnect.Close();
+        }
+    }
+
+    public int CountData()
+    {
+        int countData = 0;
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+
+            sqlQuery = "SELECT COUNT(inventory_data_code) FROM inventorydata;";
+
+            dbCommand.CommandText = sqlQuery;
+            string rawData = dbCommand.ExecuteScalar().ToString();
+            int.TryParse(rawData, out int y);
+            countData = y;
+            return countData;
         }
     }
 
@@ -74,6 +107,71 @@ public class InventoryDBScript : MonoBehaviour
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
+            dbConnect.Close();
+        }
+    }
+
+    public void LoadItemsData()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            sqlQuery = "SELECT * FROM inventorydata;";
+            dbCommand.CommandText = sqlQuery;
+            dbReader = dbCommand.ExecuteReader();
+
+            while (dbReader.Read())
+            {
+                string invID, invName, invType;
+                double invWeight;
+                int invUse;
+                invID = "" + dbReader["inventory_data_code"];
+                invName = "" + dbReader["inventory_data_name"];
+                invType = "" + dbReader["inventory_data_type"];
+
+                double.TryParse(("" + dbReader["inventory_data_weight"]),
+                    out double x);
+                invWeight = x;
+
+                int.TryParse(("" + dbReader["inventory_usable_code"]),
+                    out int y);
+                invUse = y;
+
+                Debug.Log("New Data");
+                Debug.Log("Inventory ID: " + invID);
+                Debug.Log("Inventory Name: " + invName);
+                Debug.Log("Inventory Type: " + invType);
+                Debug.Log("Inventory Weight: " + invWeight);
+                Debug.Log("Inventory Use Code: " + invUse);
+                Debug.Log("End Data");
+            }
+            dbReader.Close();
+        }
+        dbConnect.Close();
+    }
+
+    public void SaveInventoryData()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            InventoryDataEntry[] rawData = ReturnIDEArray();
+
+            foreach(InventoryDataEntry inv in rawData)
+            {
+                sqlQuery = "UPDATE inventorydata SET inventory_data_name = '" +
+                    inv.inventoryName + "', inventory_data_type = '" +
+                    inv.inventoryType + "', inventory_data_weight = '" +
+                    inv.inventoryWeight + "', inventory_usable_code = '" +
+                    inv.inventoryUsableCode + "' WHERE inventory_data_code = '"
+                    + inv.inventoryID + "';";
+
+                dbCommand.CommandText = sqlQuery;
+                dbCommand.ExecuteScalar();
+            }
+
             dbConnect.Close();
         }
     }

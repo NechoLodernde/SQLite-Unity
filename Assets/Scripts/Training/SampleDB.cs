@@ -20,7 +20,7 @@ public class SampleDB : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        BetterRandomString();
+        //BetterRandomString();
         // Run the method to create DB and Table
         //CreateDB();
         

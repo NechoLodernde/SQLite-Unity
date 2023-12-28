@@ -44,11 +44,13 @@ public class PlayerDataManager : MonoBehaviour
     }
 }
 
+[System.Serializable]
 public class PlayerDataStruct
 {
     public List<PlayerDataEntry> list = new();
 }
 
+[System.Serializable]
 public class PlayerDataEntry
 {
     public string playerID, playerName, playerFaculty,

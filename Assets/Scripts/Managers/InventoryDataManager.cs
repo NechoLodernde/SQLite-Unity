@@ -53,11 +53,13 @@ public class InventoryDataManager : MonoBehaviour
     }
 }
 
+[System.Serializable]
 public class InventoryDataStruct
 {
     public List<InventoryDataEntry> list = new();
 }
 
+[System.Serializable]
 public class InventoryDataEntry
 {
     public string inventoryID, inventoryName, inventoryType;

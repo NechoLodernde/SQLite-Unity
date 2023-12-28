@@ -35,7 +35,7 @@ public class PlayerDBScript : MonoBehaviour
         CreateDB();
     }
 
-    private void CreateDB()
+    public void CreateDB()
     {
         using (dbConnect = new SqliteConnection(conn))
         {
@@ -46,8 +46,8 @@ public class PlayerDBScript : MonoBehaviour
                 "[id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                 "[player_id] VARCHAR(100) NOT NULL UNIQUE, " +
                 "[player_name] VARCHAR(128) NOT NULL UNIQUE, " +
-                "[player_gender] VARCHAR(10) NOT NULL, " +
-                "[player_faculty] VARCHAR(48) NOT NULL, " +
+                "[player_gender] VARCHAR(12) NOT NULL, " +
+                "[player_faculty] VARCHAR(128) NOT NULL, " +
                 "[player_study_program] VARCHAR(256) NOT NULL, " +
                 "[player_semester] INTEGER DEFAULT '1' NOT NULL, " +
                 "[active_quest_code] VARCHAR(100) NOT NULL);";
@@ -55,6 +55,39 @@ public class PlayerDBScript : MonoBehaviour
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
             dbConnect.Close();
+        }
+    }
+
+    public void DeleteDB()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+
+            sqlQuery = "DROP TABLE playerdata;";
+
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
+            dbConnect.Close();
+        }
+    }
+
+    public int CountData()
+    {
+        int countData = 0;
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+
+            sqlQuery = "SELECT COUNT(player_id) FROM playerdata;";
+
+            dbCommand.CommandText = sqlQuery;
+            string rawData = dbCommand.ExecuteScalar().ToString();
+            int.TryParse(rawData, out int y);
+            countData = y;
+            return countData;
         }
     }
 
@@ -83,7 +116,7 @@ public class PlayerDBScript : MonoBehaviour
         }
     }
 
-    public void LoadPlayer()
+    public void LoadPlayers()
     {
         using (dbConnect = new SqliteConnection(conn))
         {
@@ -108,6 +141,15 @@ public class PlayerDBScript : MonoBehaviour
 
                 int.TryParse(("" + dbReader["player_semester"]), out int y);
                 pSemester = y;
+                Debug.Log("The Data:");
+                Debug.Log("Player ID: " + pID);
+                Debug.Log("Name: " + pName);
+                Debug.Log("Gender: " + pGender);
+                Debug.Log("Faculty: " + pFaculty);
+                Debug.Log("Study Program: " + pStudyProgram);
+                Debug.Log("Semester: " + pSemester);
+                Debug.Log("Active Quest: " + pActiveQuest);
+                Debug.Log("End Data");
             }
 
             dbReader.Close();
@@ -125,7 +167,7 @@ public class PlayerDBScript : MonoBehaviour
             int playerSemNew = rawData.playerSemester + 1;
             
             sqlQuery = "UPDATE playerdata SET player_semester = '" + playerSemNew + 
-                "' WHERE playerID = '" + rawData.playerID + "';";
+                "' WHERE player_id = '" + rawData.playerID + "';";
 
             PlayerDataManager.PlayerDataInstance.UpdateSemester(playerSemNew);
 
@@ -146,9 +188,31 @@ public class PlayerDBScript : MonoBehaviour
             string newQuestID = "ExampleNewID";
 
             sqlQuery = "UPDATE playerdata SET active_quest_code = '" + newQuestID +
-                "' WHERE playerID = '" + rawData.playerID + "';";
+                "' WHERE player_id = '" + rawData.playerID + "';";
 
             PlayerDataManager.PlayerDataInstance.UpdateQuestID(newQuestID);
+
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
+            dbConnect.Close();
+        }
+    }
+
+    public void SavePlayerData()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            PlayerDataEntry rawData = ReturnPDE();
+
+            sqlQuery = "UPDATE playerdata SET player_name = '" + rawData.playerName + "'," +
+                " player_gender = '" + rawData.playerGender + "', " + 
+                "player_faculty = '" + rawData.playerFaculty + "', "+ 
+                "player_study_program = '" + rawData.playerStudyProgram + "', " +
+                "player_semester = '" + rawData.playerSemester + "', " +
+                "active_quest_code = '" + rawData.activeQuestCode + "' " +
+                "WHERE player_id = '" + rawData.playerID + "';";
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
