@@ -62,7 +62,7 @@ public class InventoryDBScript : MonoBehaviour
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
 
-            sqlQuery = "DROP TABLE inventorydata;";
+            sqlQuery = "DELETE FROM inventorydata;";
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -84,6 +84,7 @@ public class InventoryDBScript : MonoBehaviour
             string rawData = dbCommand.ExecuteScalar().ToString();
             int.TryParse(rawData, out int y);
             countData = y;
+            dbConnect.Close();
             return countData;
         }
     }

@@ -65,7 +65,7 @@ public class PlayerDBScript : MonoBehaviour
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
 
-            sqlQuery = "DROP TABLE playerdata;";
+            sqlQuery = "DELETE FROM playerdata;";
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();

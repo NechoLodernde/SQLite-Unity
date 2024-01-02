@@ -11,10 +11,40 @@ public class TestingScripts : MonoBehaviour
 {
     public TMP_Text sentence_ui;
 
+    private void Awake()
+    {
+        //AwakePlayerData();
+        AwakeInventoryData();
+        AwakePlayerInventoryData();
+    }
+
     private void Start()
     {
-        PlayerDBScript.PlayerDBScriptInstance.DeleteDB();
+        //TestingPlayerData();
+        TestingInventoryData();
+        TestingPlayerInventory();
+    }
+
+    private void AwakePlayerData()
+    {
+        //PlayerDBScript.PlayerDBScriptInstance.DeleteDB();
         PlayerDBScript.PlayerDBScriptInstance.CreateDB();
+    }
+
+    private void AwakeInventoryData()
+    {
+        //InventoryDBScript.InventoryDBInstance.DeleteDB();
+        InventoryDBScript.InventoryDBInstance.CreateDB();
+    }
+
+    private void AwakePlayerInventoryData()
+    {
+       //PlayerInventoryDBScript.PlayerInvDBInstance.DeleteDB();
+        PlayerInventoryDBScript.PlayerInvDBInstance.CreateDB();
+    }
+
+    private void TestingPlayerData()
+    {
         StartCoroutine(LoadingTime());
 
         PlayerDBScript.PlayerDBScriptInstance.AddPlayer("Vanitas",
@@ -25,12 +55,13 @@ public class TestingScripts : MonoBehaviour
             "Perempuan", "Fakultas Teknik",
             "Teknik Nuklir", 1);
 
-        Debug.Log("Total number of data: ");
-        Debug.Log(PlayerDBScript.PlayerDBScriptInstance.CountData());
+        Debug.Log("Total number of data: " +
+            PlayerDBScript.PlayerDBScriptInstance.CountData());
         // PlayerDBScript.PlayerDBScriptInstance.LoadPlayers();
         sentence_ui.text = "";
 
-        foreach(PlayerDataEntry players in PlayerDataManager.PlayerDataInstance.playerStruct.list)
+        foreach (PlayerDataEntry players in 
+            PlayerDataManager.PlayerDataInstance.playerStruct.list)
         {
             sentence_ui.text += "ID: " + players.playerID + "\n";
             sentence_ui.text += "Name: " + players.playerName + "\n";
@@ -39,6 +70,63 @@ public class TestingScripts : MonoBehaviour
             sentence_ui.text += "Study Program: " + players.playerStudyProgram + "\n";
             sentence_ui.text += "Semester: " + players.playerSemester + "\n";
             sentence_ui.text += "Active Quest: " + players.activeQuestCode + "\n";
+        }
+    }
+
+    private void TestingInventoryData()
+    {
+        StartCoroutine(LoadingTime());
+
+        InventoryDBScript.InventoryDBInstance.AddItem("Notebook",
+            "Essential", 2.0, 1);
+
+        InventoryDBScript.InventoryDBInstance.AddItem("Backpack",
+            "Essential", 4.0, 1);
+
+        Debug.Log("Total number of data: " +
+            InventoryDBScript.InventoryDBInstance.CountData());
+        sentence_ui.text = "";
+
+        foreach (InventoryDataEntry inv in 
+            InventoryDataManager.InventoryDataInstance.inventoryStruct.list)
+        {
+            sentence_ui.text += "ID: " + inv.inventoryID + "\n";
+            sentence_ui.text += "Inventory Name: " + inv.inventoryName
+                + "\n";
+            sentence_ui.text += "Inventory Type: " + inv.inventoryType
+                + "\n";
+            sentence_ui.text += "Inventory Weight: " + inv.inventoryWeight
+                + "\n";
+            sentence_ui.text += "Inventory Usable Code " +
+                inv.inventoryUsableCode + "\n";
+        }
+    }
+
+    private void TestingPlayerInventory()
+    {
+        StartCoroutine(LoadingTime());
+
+        foreach (InventoryDataEntry inv 
+            in InventoryDataManager.InventoryDataInstance.inventoryStruct.list)
+        {
+            PlayerInventoryDBScript.PlayerInvDBInstance.AddInventory(
+                inv.inventoryID);
+        }
+
+        Debug.Log("Total number of data: " +
+            PlayerInventoryDBScript.PlayerInvDBInstance.CountData());
+        sentence_ui.text = "";
+
+        foreach (PlayerInventoryEntry inv in
+            PlayerInventoryManager.PlayerInventoryInstance.inventoryStruct.list)
+        {
+            sentence_ui.text += "ID: " + inv.inventoryID + "\n";
+            sentence_ui.text += "Inventory Number: " +
+                inv.inventoryNumber + "\n";
+            sentence_ui.text += "Inventory Name: " +
+                inv.inventoryName + "\n";
+            sentence_ui.text += "Inventory Usable Code " +
+                inv.inventoryUsableCode + "\n";
         }
     }
 
@@ -53,7 +141,7 @@ public class TestingScripts : MonoBehaviour
 
     IEnumerator LoadingTime()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(5);
     }
 }
 
