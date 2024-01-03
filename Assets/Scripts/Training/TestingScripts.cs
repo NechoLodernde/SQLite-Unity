@@ -27,20 +27,20 @@ public class TestingScripts : MonoBehaviour
 
     private void AwakePlayerData()
     {
-        //PlayerDBScript.PlayerDBScriptInstance.DeleteDB();
         PlayerDBScript.PlayerDBScriptInstance.CreateDB();
+        PlayerDBScript.PlayerDBScriptInstance.DeleteDB();
     }
 
     private void AwakeInventoryData()
     {
-        //InventoryDBScript.InventoryDBInstance.DeleteDB();
         InventoryDBScript.InventoryDBInstance.CreateDB();
+        InventoryDBScript.InventoryDBInstance.DeleteDB();
     }
 
     private void AwakePlayerInventoryData()
     {
-       //PlayerInventoryDBScript.PlayerInvDBInstance.DeleteDB();
         PlayerInventoryDBScript.PlayerInvDBInstance.CreateDB();
+        PlayerInventoryDBScript.PlayerInvDBInstance.DeleteDB();
     }
 
     private void TestingPlayerData()
@@ -128,6 +128,19 @@ public class TestingScripts : MonoBehaviour
             sentence_ui.text += "Inventory Usable Code " +
                 inv.inventoryUsableCode + "\n";
         }
+
+        PlayerInventoryEntry[] testDelete =
+            PlayerInventoryDBScript.PlayerInvDBInstance.ReturnPIEArray();
+        foreach(PlayerInventoryEntry inv in testDelete)
+        {
+            Debug.Log(inv.inventoryID);
+            Debug.Log(inv.inventoryNumber);
+            Debug.Log(inv.inventoryName);
+            Debug.Log(inv.inventoryUsableCode);
+        }
+        //PlayerInventoryDBScript.PlayerInvDBInstance.DeleteInventory(testDelete[0].inventoryID);
+        PlayerInventoryManager.PlayerInventoryInstance.UpdateUsableCode(
+            testDelete[0].inventoryID, 0);
     }
 
     public void ExitGame()

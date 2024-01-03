@@ -14,15 +14,19 @@ public class PlayerInventoryDBScript : MonoBehaviour
         "/StreamingAssets/Database";
     private readonly string refFilepath = Application.dataPath +
         "/StreamingAssets/Database";
-    string conn, sqlQuery;
+    string conn, refConn, refSqlQuery, sqlQuery;
     IDbConnection dbConnect;
+    IDbConnection dbRefConnect;
     IDbCommand dbCommand;
+    IDbCommand dbRefCommand;
     IDataReader dbReader;
 
     private void Awake()
     {
         string filePath = filepath + dbName;
         conn = "URI=file:" + filePath;
+        string refFilePath = refFilepath + refName;
+        refConn = "URI=file:" + refFilePath;
 
         PlayerInvDBInstance = this;
 
@@ -45,7 +49,7 @@ public class PlayerInventoryDBScript : MonoBehaviour
 
             sqlQuery = "CREATE TABLE IF NOT EXISTS playerinventory (" +
                 "[id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-                "[inventory_data_code] VARCHAR(100) NOT NULL, " +
+                "[inventory_data_code] VARCHAR(100) NOT NULL UNIQUE, " +
                 "[player_inventory_number] INTEGER, " +
                 "[player_inventory_name] VARCHAR(128) NOT NULL UNIQUE, " +
                 "[inventory_usable_code] INTEGER DEFAULT '0' NOT NULL);";
@@ -73,7 +77,6 @@ public class PlayerInventoryDBScript : MonoBehaviour
 
     public int CountData()
     {
-        int countData = 0;
         using (dbConnect = new SqliteConnection(conn))
         {
             dbConnect.Open();
@@ -84,7 +87,7 @@ public class PlayerInventoryDBScript : MonoBehaviour
             dbCommand.CommandText = sqlQuery;
             string rawData = dbCommand.ExecuteScalar().ToString();
             int.TryParse(rawData, out int y);
-            countData = y;
+            int countData = y;
             dbConnect.Close();
             return countData;
         }
@@ -92,13 +95,13 @@ public class PlayerInventoryDBScript : MonoBehaviour
 
     public void AddInventory(string inventoryCode)
     {
-        using (dbConnect = new SqliteConnection(conn))
+        using (dbRefConnect = new SqliteConnection(refConn))
         {
-            dbConnect.Open();
-            dbCommand = dbConnect.CreateCommand();
-            sqlQuery = "SELECT * FROM inventorydata;";
-            dbCommand.CommandText = sqlQuery;
-            dbReader = dbCommand.ExecuteReader();
+            dbRefConnect.Open();
+            dbRefCommand = dbRefConnect.CreateCommand();
+            refSqlQuery = "SELECT * FROM inventorydata;";
+            dbRefCommand.CommandText = refSqlQuery;
+            dbReader = dbRefCommand.ExecuteReader();
             int totalInventory = CountData();
             while (dbReader.Read())
             {
@@ -112,22 +115,28 @@ public class PlayerInventoryDBScript : MonoBehaviour
                         out int y);
                     invUse = y;
                     totalInventory++;
-                    sqlQuery = "INSERT INTO playerinventory (inventory_data_code, " +
+                    using (dbConnect = new SqliteConnection(conn))
+                    {
+                        dbConnect.Open();
+                        dbCommand = dbConnect.CreateCommand();
+                        sqlQuery = "INSERT INTO playerinventory (inventory_data_code, " +
                         "player_inventory_number, player_inventory_name, " +
                         "inventory_usable_code) VALUES ('" + invID + "', '" +
                         totalInventory + "', '" + invName + "', '" + invUse + "');";
 
-                    PlayerInventoryManager.PlayerInventoryInstance.InsertNewData(
-                        invID, totalInventory, invName, invUse);
+                        PlayerInventoryManager.PlayerInventoryInstance.InsertNewData(
+                            invID, totalInventory, invName, invUse);
 
-                    dbCommand.CommandText = sqlQuery;
-                    dbCommand.ExecuteScalar();
+                        dbCommand.CommandText = sqlQuery;
+                        dbCommand.ExecuteScalar();
+                    }
+                    dbConnect.Close();
                 }
                 
             }
             dbReader.Close();
         }
-        dbConnect.Close();
+        dbRefConnect.Close();
     }
 
     public void DeleteInventory(string prevInvID)
@@ -136,6 +145,12 @@ public class PlayerInventoryDBScript : MonoBehaviour
         {
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
+            Debug.Log("Input id: " + prevInvID);
+            sqlQuery = "DELETE FROM playerinventory WHERE" +
+                " inventory_data_code='" + prevInvID + "';";
+            PlayerInventoryManager.PlayerInventoryInstance.DeleteData(prevInvID);
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
         }
         dbConnect.Close();
     }

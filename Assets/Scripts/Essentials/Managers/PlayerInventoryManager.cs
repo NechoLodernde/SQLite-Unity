@@ -26,25 +26,19 @@ public class PlayerInventoryManager : MonoBehaviour
         newEntry.inventoryNumber = invNumber;
         newEntry.inventoryName = invName;
         newEntry.inventoryUsableCode = invUseCode;
+        inventoryStruct.list.Add(newEntry);
     }
 
     public void DeleteData(string prevInvID)
-    {
-        PlayerInventoryEntry prevEntry = new();
-        
+    {     
         foreach (PlayerInventoryEntry inv in inventoryStruct.list)
         {
             if (inv.inventoryID.Equals(prevInvID))
             {
-                prevEntry.inventoryID = inv.inventoryID;
-                prevEntry.inventoryNumber = inv.inventoryNumber;
-                prevEntry.inventoryName = inv.inventoryName;
-                prevEntry.inventoryUsableCode = inv.inventoryUsableCode;
+                inventoryStruct.list.Remove(inv);
                 break;
             }
-        }
-
-        inventoryStruct.list.Remove(prevEntry);
+        }     
     }
 
     public void UpdateUsableCode (string prevInvID, int newUseID)
