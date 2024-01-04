@@ -18,11 +18,14 @@ public class AchievementListManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void InsertNewData(string aID, string aName, string uCode)
+    public void InsertNewData(string aID, int aNumber, string aName,
+        string aDesc, string uCode)
     {
         AchievementDataEntry newEntry = new();
         newEntry.achievementID = aID;
+        newEntry.achievementNumber = aNumber;
         newEntry.achievementName = aName;
+        newEntry.achievementDesc = aDesc;
         newEntry.unlockCode = uCode;
         achievementStruct.list.Add(newEntry);
     }
@@ -37,5 +40,7 @@ public class AchievementDataStruct
 [System.Serializable]
 public class AchievementDataEntry
 {
-    public string achievementID, achievementName, unlockCode;
+    public string achievementID;
+    public int achievementNumber;
+    public string achievementName, achievementDesc, unlockCode;
 }

@@ -43,7 +43,9 @@ public class AchievementListDBScript : MonoBehaviour
             sqlQuery = "CREATE TABLE IF NOT EXISTS achievementlist (" +
                 "[id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                 "[achievement_id] VARCHAR(64) NOT NULL UNIQUE, " +
+                "[achievement_number] INTEGER NOT NULL UNIQUE, " +
                 "[achievement_name] VARCHAR(128) NOT NULL UNIQUE, " +
+                "[achievement_desc] VARCHAR(1024) NOT NULL UNIQUE, " +
                 "[unlock_code] VARCHAR(64) NOT NULL UNIQUE);";
 
             dbCommand.CommandText = sqlQuery;
@@ -83,18 +85,22 @@ public class AchievementListDBScript : MonoBehaviour
         }
     }
 
-    public void AddAchievement(string aId, string aName, string uCode)
+    public void AddAchievement(string aId, string aName, 
+        string aDesc, string uCode)
     {
         using (dbConnect = new SqliteConnection(conn))
         {
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
+            int totalA = CountData();
+            totalA++;
             sqlQuery = "INSERT INTO achievementlist (achievement_id, " +
-                "achievement_name, unlock_code) VALUES ('" + aId + "', '" +
-                aName + "', '" + uCode + "');";
+                "achievement_number, achievement_name, achievement_desc, " +
+                "unlock_code) VALUES ('" + aId + "', '" + totalA + "', '" +
+                aName + "', '" + aDesc + "', '" + uCode + "');";
 
             AchievementListManager.AchievementListInstance.InsertNewData(
-                aId, aName, uCode);
+                aId, totalA, aName, aDesc, uCode);
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -114,14 +120,21 @@ public class AchievementListDBScript : MonoBehaviour
 
             while (dbReader.Read())
             {
-                string aID, aName, uCode;
+                string aID, aName, aDesc, uCode;
+                int aNumber;
                 aID = "" + dbReader["achievement_id"];
+                int.TryParse(("" + dbReader["achievement_number"]),
+                    out int y);
+                aNumber = y;
                 aName = "" + dbReader["achievement_name"];
+                aDesc = "" + dbReader["achievement_desc"];
                 uCode = "" + dbReader["unlock_code"];
 
                 Debug.Log("New Data");
                 Debug.Log("Achievement ID: " + aID);
+                Debug.Log("Achievement Number: " + aNumber);
                 Debug.Log("Achievement Name: " + aName);
+                Debug.Log("Achievement Desc: " + aDesc);
                 Debug.Log("Unlock Code: " + uCode);
                 Debug.Log("End Data");
             }
@@ -140,8 +153,10 @@ public class AchievementListDBScript : MonoBehaviour
 
             foreach (AchievementDataEntry achieve in rawData)
             {
-                sqlQuery = "UPDATE achievementlist SET achievement_name = '" +
-                    achieve.achievementName + "', unlock_code = '" +
+                sqlQuery = "UPDATE achievementlist SET achievement_number = '" +
+                    achieve.achievementNumber + "', achievement_name = '" +
+                    achieve.achievementName + "', achievement_desc = '" +
+                    achieve.achievementDesc + "', unlock_code = '" +
                     achieve.unlockCode + "' WHERE achievement_id = '" +
                     achieve.achievementID + "';";
 
