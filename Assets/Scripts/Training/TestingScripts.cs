@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Mono.Data.Sqlite;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,15 +15,19 @@ public class TestingScripts : MonoBehaviour
     private void Awake()
     {
         //AwakePlayerData();
-        AwakeInventoryData();
-        AwakePlayerInventoryData();
+        //AwakeInventoryData();
+        //AwakePlayerInventoryData();
     }
 
     private void Start()
     {
         //TestingPlayerData();
-        TestingInventoryData();
-        TestingPlayerInventory();
+        //TestingInventoryData();
+        //TestingPlayerInventory();
+        System.Version version =
+            typeof(SqliteConnection).Assembly.GetName().Version;
+
+        Debug.Log($"Mono.Data.Sqlite Version: {version}");
     }
 
     private void AwakePlayerData()
