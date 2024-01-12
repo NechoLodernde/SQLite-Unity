@@ -48,7 +48,7 @@ public class CurriculumDBScript : MonoBehaviour
                 "[subject_study_program] VARCHAR(128) NOT NULL, " +
                 "[subject_total_credit] INTEGER NOT NULL, " +
                 "[subject_duration] INTEGER NOT NULL, " +
-                "[subject_prequirement_code] VARCHAR(32) NOT NULL, " +
+                "[subject_prerequisite_code] VARCHAR(32) NOT NULL, " +
                 "[subject_semester] INTEGER NOT NULL, " +
                 "[subject_year] VARCHAR(12) NOT NULL, " +
                 "[subject_room_code] VARCHAR(24) NOT NULL);";
