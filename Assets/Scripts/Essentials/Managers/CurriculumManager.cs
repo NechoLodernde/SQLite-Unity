@@ -49,6 +49,11 @@ public class CurriculumManager : MonoBehaviour
         }
     }
 
+    public void ClearList()
+    {
+        curriculumStruct.list.Clear();
+    }
+
     public void UpdateSubjectCode (
         string prevSCode, string newSCode)
     {

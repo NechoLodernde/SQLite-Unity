@@ -8,6 +8,10 @@ using Mono.Data.Sqlite;
 using UnityEditor;
 #endif
 
+// TODO: Optimize the script for testing class and methods,
+//       don't forget to check for any mistype
+
+
 public class TestingScripts : MonoBehaviour
 {
     public TMP_Text sentence_ui;
@@ -28,6 +32,8 @@ public class TestingScripts : MonoBehaviour
             typeof(SqliteConnection).Assembly.GetName().Version;
 
         Debug.Log($"Mono.Data.Sqlite Version: {version}");
+
+        TestCurriculumXML();
     }
 
     private void AwakePlayerData()
@@ -148,6 +154,46 @@ public class TestingScripts : MonoBehaviour
             testDelete[0].inventoryID, 0);
     }
 
+    private void TestCurriculumXML()
+    {
+        //StartCoroutine(LoadingTime());
+
+        //CurriculumXMLScript.CurriculumXMLInstance.LoadCurriculums();
+
+        CurriculumManager.CurriculumManagerInstance.
+            InsertNewData("KK140075_22",
+            "Pengembangan Permainan Digital",
+            "FTI", "Teknik Infomratika", 15,
+            750, "KK140056_18", 5, "Ganjil",
+            "UY.05R003");
+        CurriculumManager.CurriculumManagerInstance.
+            InsertNewData("KK140056_18",
+            "Pemrograman Berorientasi Objek",
+            "FTI", "Teknik Informatika", 4,
+            200, "KK140053_18", 3, "Ganjil",
+            "FO");
+
+        Debug.Log(" Total number of data in list: " +
+            CurriculumManager.CurriculumManagerInstance.
+            curriculumStruct.list.Count);
+        sentence_ui.text = "";
+
+        CurriculumXMLScript.CurriculumXMLInstance.
+            SaveCurriculums();
+
+        //foreach (PlayerDataEntry players in
+        //    PlayerDataManager.PlayerDataInstance.playerStruct.list)
+        //{
+        //    sentence_ui.text += "ID: " + players.playerID + "\n";
+        //    sentence_ui.text += "Name: " + players.playerName + "\n";
+        //    sentence_ui.text += "Gender: " + players.playerGender + "\n";
+        //    sentence_ui.text += "Faculty: " + players.playerFaculty + "\n";
+        //    sentence_ui.text += "Study Program: " + players.playerStudyProgram + "\n";
+        //    sentence_ui.text += "Semester: " + players.playerSemester + "\n";
+        //    sentence_ui.text += "Active Quest: " + players.activeQuestCode + "\n";
+        //}
+    }
+
     public void ExitGame()
     {
 #if UNITY_EDITOR
@@ -160,7 +206,6 @@ public class TestingScripts : MonoBehaviour
     IEnumerator LoadingTime()
     {
         yield return new WaitForSeconds(5);
+        TestCurriculumXML();
     }
 }
-
-
