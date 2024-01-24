@@ -15,7 +15,7 @@ public class CurriculumManager : MonoBehaviour
     {
         CurriculumManagerInstance = this;
 
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(gameObject);
     }
 
     public void InsertNewData(string sCode, string sName,
@@ -37,11 +37,11 @@ public class CurriculumManager : MonoBehaviour
         curriculumStruct.list.Add(newEntry);
     }
 
-    public void DeleteData(string prevSubID)
+    public void DeleteData(string prevSCode)
     {
         foreach (CurriculumEntry curri in curriculumStruct.list)
         {
-            if (curri.subjectCode.Equals(prevSubID))
+            if (curri.subjectCode.Equals(prevSCode))
             {
                 curriculumStruct.list.Remove(curri);
                 break;

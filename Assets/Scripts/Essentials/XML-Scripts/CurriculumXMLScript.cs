@@ -75,8 +75,6 @@ public class CurriculumXMLScript : MonoBehaviour
         }
     }
 
-    
-
     public void SaveCurriculums()
     {
         ResetData();
@@ -126,6 +124,7 @@ public class CurriculumXMLScript : MonoBehaviour
                 elmNew.AppendChild(currRC);
                 elmRoot.AppendChild(elmNew);
             }
+
             xmlDoc.Save(filePath);
         }
         else

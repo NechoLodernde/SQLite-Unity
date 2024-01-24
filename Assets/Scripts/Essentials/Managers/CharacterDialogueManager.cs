@@ -10,7 +10,7 @@ public class CharacterDialogueManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(gameObject);
     }
 
     public void InsertNewData(string cDCode, string cDName,
@@ -21,6 +21,7 @@ public class CharacterDialogueManager : MonoBehaviour
         newEntry.charDialName = cDName;
         newEntry.charDialTarget = cDTarget;
         newEntry.charDialText = cDText;
+        Struct.list.Add(newEntry);
     }
 
     public void DeleteData(string prevCDCode)
@@ -81,7 +82,14 @@ public class CharacterDialogueManager : MonoBehaviour
     public void UpdateCharDialText (string prevCDCode,
         string newCDText)
     {
-
+        foreach (CharDialEntry cDial in Struct.list)
+        {
+            if (prevCDCode.Equals(cDial.charDialCode))
+            {
+                cDial.charDialText = newCDText;
+                break;
+            }
+        }
     }
 }
 
