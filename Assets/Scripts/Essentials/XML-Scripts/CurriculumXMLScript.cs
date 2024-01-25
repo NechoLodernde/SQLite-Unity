@@ -28,6 +28,7 @@ public class CurriculumXMLScript : MonoBehaviour
         {
             InitializeFile();
         }
+
         DontDestroyOnLoad(gameObject);
     }
 
@@ -193,6 +194,7 @@ public class CurriculumXMLScript : MonoBehaviour
                             break;
                     }
                 }
+
                 CurriculumManager.CurriculumManagerInstance.
                     curriculumStruct.list.Add(newEntry);
             }

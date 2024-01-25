@@ -140,6 +140,7 @@ public class CharacterDialogueXMLScript : MonoBehaviour
                             break;
                     }
                 }
+
                 CharacterDialogueManager.Instance.Struct.list.Add(newEntry);
             }
         }

@@ -8,12 +8,12 @@ using System.IO;
 
 public class InventoryDataManager : MonoBehaviour
 {
-    public static InventoryDataManager InventoryDataInstance { get; private set; }
-    public InventoryDataStruct inventoryStruct;
+    public static InventoryDataManager Instance { get; private set; }
+    public InventoryDataStruct Struct;
 
     private void Awake()
     {
-        InventoryDataInstance = this;
+        Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -27,27 +27,82 @@ public class InventoryDataManager : MonoBehaviour
         newEntry.inventoryType = invType;
         newEntry.inventoryWeight = invWeight;
         newEntry.inventoryUsableCode = invUseCode;
-        inventoryStruct.list.Add(newEntry);
+        Struct.list.Add(newEntry);
     }
 
-    public void UpdateWeight(string prevInvID, double newWeight)
+    public void DeleteData(string prevInvID)
     {
-        foreach(InventoryDataEntry inv in inventoryStruct.list)
+        foreach (InventoryDataEntry entry in Struct.list)
         {
-            if (prevInvID.Equals(inv.inventoryID))
+            if (entry.inventoryID.Equals(prevInvID))
             {
-                inv.inventoryWeight = newWeight;
+                Struct.list.Remove(entry);
+                break;
             }
         }
     }
 
-    public void UpdateUsableCode (string prevInvID, int newUseID)
+    public void ClearList()
     {
-        foreach(InventoryDataEntry inv in inventoryStruct.list)
+        Struct.list.Clear();
+    }
+
+    public void UpdateInvID(string pInvID, string newInvID)
+    {
+        foreach (InventoryDataEntry entry in Struct.list)
         {
-            if (prevInvID.Equals(inv.inventoryID))
+            if (pInvID.Equals(entry.inventoryID))
+            {
+                entry.inventoryID = newInvID;
+                break;
+            }
+        }
+    }
+
+    public void UpdateInvName(string pInvID, string newInvName)
+    {
+        foreach (InventoryDataEntry entry in Struct.list)
+        {
+            if (pInvID.Equals(entry.inventoryID))
+            {
+                entry.inventoryName = newInvName;
+                break;
+            }
+        }
+    }
+
+    public void UpdateInvType(string pInvID, string newInvType)
+    {
+        foreach (InventoryDataEntry entry in Struct.list)
+        {
+            if (pInvID.Equals(entry.inventoryID))
+            {
+                entry.inventoryType = newInvType;
+                break;
+            }
+        }
+    }
+
+    public void UpdateWeight(string pInvID, double newWeight)
+    {
+        foreach(InventoryDataEntry inv in Struct.list)
+        {
+            if (pInvID.Equals(inv.inventoryID))
+            {
+                inv.inventoryWeight = newWeight;
+                break;
+            }
+        }
+    }
+
+    public void UpdateUsableCode (string pInvID, int newUseID)
+    {
+        foreach(InventoryDataEntry inv in Struct.list)
+        {
+            if (pInvID.Equals(inv.inventoryID))
             {
                 inv.inventoryUsableCode = newUseID;
+                break;
             }
         }
     }

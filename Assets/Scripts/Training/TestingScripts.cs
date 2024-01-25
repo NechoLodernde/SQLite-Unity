@@ -99,7 +99,7 @@ public class TestingScripts : MonoBehaviour
         sentence_ui.text = "";
 
         foreach (InventoryDataEntry inv in 
-            InventoryDataManager.InventoryDataInstance.inventoryStruct.list)
+            InventoryDataManager.Instance.Struct.list)
         {
             sentence_ui.text += "ID: " + inv.inventoryID + "\n";
             sentence_ui.text += "Inventory Name: " + inv.inventoryName
@@ -118,7 +118,7 @@ public class TestingScripts : MonoBehaviour
         StartCoroutine(LoadingTime());
 
         foreach (InventoryDataEntry inv 
-            in InventoryDataManager.InventoryDataInstance.inventoryStruct.list)
+            in InventoryDataManager.Instance.Struct.list)
         {
             PlayerInventoryDBScript.PlayerInvDBInstance.AddInventory(
                 inv.inventoryID);

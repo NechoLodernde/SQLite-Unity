@@ -6,15 +6,15 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 
-public class DialogueXMLScript : MonoBehaviour
+public class NPCListXMLScript : MonoBehaviour
 {
-    public static DialogueXMLScript Instance { get; private set; }
+    public static NPCListXMLScript Instance { get; private set; }
     [SerializeField] private string filePath;
 
     private void Awake()
     {
         filePath = Application.dataPath +
-            "@/StreamingAssets/XML/Dialogue.xml";
+            "@/StreamingAssets/XML/NPCList.xml";
         Instance = this;
         if (!CheckFile())
         {
@@ -34,13 +34,13 @@ public class DialogueXMLScript : MonoBehaviour
 
         XmlWriter writer = XmlWriter.Create(filePath, settings);
         writer.WriteStartDocument();
-        writer.WriteStartElement("Dialogue");
+        writer.WriteStartElement("NPCList");
         writer.WriteEndElement();
         writer.WriteEndDocument();
         writer.Flush();
     }
 
-    private bool CheckFile()
+    public bool CheckFile()
     {
         if (File.Exists(filePath))
         {
@@ -68,7 +68,7 @@ public class DialogueXMLScript : MonoBehaviour
         }
     }
 
-    public void SaveDialogues()
+    public void SaveNPCLists()
     {
         ResetData();
         XmlDocument xmlDoc = new();
@@ -76,29 +76,30 @@ public class DialogueXMLScript : MonoBehaviour
         {
             xmlDoc.Load(filePath);
             XmlElement elmRoot = xmlDoc.DocumentElement;
-            foreach (DialEntry dial in DialogueManager.Instance.
+            foreach (NPCLEntry NLE in NPCListManager.Instance.
                 Struct.list)
             {
-                Debug.Log("Current data: " + dial.dialCode);
-                XmlElement elmNew = xmlDoc.CreateElement("DialogueEntry");
-                XmlElement dCode = xmlDoc.CreateElement("DialogueCode");
-                XmlElement dCName = xmlDoc.CreateElement("DialogueCharName");
-                XmlElement dText = xmlDoc.CreateElement("DialogueText");
-                XmlElement cDCode = xmlDoc.CreateElement("CharacterDialogueCode");
+                Debug.Log("Current data: " + NLE.npcLCode);
+                XmlElement elmNew = xmlDoc.CreateElement("NPCListEntry");
+                XmlElement nLCode = xmlDoc.CreateElement("NPCListCode");
+                XmlElement nLName = xmlDoc.CreateElement("NPCListName");
+                XmlElement nLMPath = xmlDoc.CreateElement("NPCListModelPath");
+                XmlElement nLType = xmlDoc.CreateElement("NPCListType");
 
-                dCode.InnerText = dial.dialCode;
-                dCName.InnerText = dial.dialCharName;
-                dText.InnerText = dial.dialText;
-                cDCode.InnerText = dial.charDialCode;
+                nLCode.InnerText = NLE.npcLCode;
+                nLName.InnerText = NLE.npcLName;
+                nLMPath.InnerText = NLE.npcLMPath;
+                nLType.InnerText = NLE.npcLType;
 
-                elmNew.AppendChild(dCode);
-                elmNew.AppendChild(dCName);
-                elmNew.AppendChild(dText);
-                elmNew.AppendChild(cDCode);
-                elmRoot.AppendChild(cDCode);
+                elmNew.AppendChild(nLCode);
+                elmNew.AppendChild(nLName);
+                elmNew.AppendChild(nLMPath);
+                elmNew.AppendChild(nLType);
+                elmRoot.AppendChild(elmNew);
             }
 
             xmlDoc.Save(filePath);
+            
         }
         else
         {
@@ -106,42 +107,42 @@ public class DialogueXMLScript : MonoBehaviour
         }
     }
 
-    public void LoadDialogues()
+    public void LoadNPCLists()
     {
         XmlDocument xmlDoc = new();
         if (CheckFile())
         {
             xmlDoc.Load(filePath);
 
-            XmlNodeList dList = xmlDoc.GetElementsByTagName("DialogueEntry");
+            XmlNodeList nLList = xmlDoc.GetElementsByTagName(
+                "NPCListEntry");
 
-            foreach (XmlNode dInfo in dList)
+            foreach (XmlNode nLInfo in nLList)
             {
-                XmlNodeList dCon = dInfo.ChildNodes;
-                DialEntry newEntry = new();
-                foreach (XmlNode dItems in dCon)
+                XmlNodeList nLCon = nLInfo.ChildNodes;
+                NPCLEntry newEntry = new();
+                foreach (XmlNode nLItems in nLCon)
                 {
-                    switch (dItems.Name)
+                    switch (nLItems.Name)
                     {
-                        case "DialogueCode":
-                            newEntry.dialCode = dItems.InnerText;
+                        case "NPCListCode":
+                            newEntry.npcLCode = nLItems.InnerText;
                             break;
-                        case "DialogueCharName":
-                            newEntry.dialCharName = dItems.InnerText;
+                        case "NPCListName":
+                            newEntry.npcLName = nLItems.InnerText;
                             break;
-                        case "DialogueText":
-                            newEntry.dialText = dItems.InnerText;
+                        case "NPCListModelPath":
+                            newEntry.npcLMPath = nLItems.InnerText;
                             break;
-                        case "CharacterDialogueCode":
-                            newEntry.charDialCode = dItems.InnerText;
+                        case "NPCListType":
+                            newEntry.npcLType = nLItems.InnerText;
                             break;
                         default:
                             Debug.Log("End of the data");
                             break;
                     }
                 }
-
-                DialogueManager.Instance.Struct.list.Add(newEntry);
+                NPCListManager.Instance.Struct.list.Add(newEntry);
             }
         }
         else

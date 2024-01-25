@@ -103,7 +103,7 @@ public class InventoryDBScript : MonoBehaviour
                 "('" + randomInvID + "', '" + iName + "', '" + iType + "', '" +
                 iWeight + "', '" + iUse + "');";
 
-            InventoryDataManager.InventoryDataInstance.InsertNewData(randomInvID,
+            InventoryDataManager.Instance.InsertNewData(randomInvID,
                 iName, iType, iWeight, iUse);
 
             dbCommand.CommandText = sqlQuery;
@@ -191,7 +191,7 @@ public class InventoryDBScript : MonoBehaviour
     public InventoryDataEntry[] ReturnIDEArray()
     {
         InventoryDataEntry[] RawData;
-        RawData = InventoryDataManager.InventoryDataInstance.inventoryStruct.list.ToArray();
+        RawData = InventoryDataManager.Instance.Struct.list.ToArray();
         return RawData;
     }
 }
