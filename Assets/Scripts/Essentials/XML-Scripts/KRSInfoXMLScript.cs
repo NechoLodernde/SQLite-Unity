@@ -26,11 +26,13 @@ public class KRSInfoXMLScript : MonoBehaviour
 
     public void InitializeFile()
     {
-        XmlWriterSettings settings = new();
-        settings.Encoding = System.Text.Encoding.GetEncoding("UTF-8");
-        settings.Indent = true;
-        settings.IndentChars = ("    ");
-        settings.OmitXmlDeclaration = false;
+        XmlWriterSettings settings = new()
+        {
+            Encoding = System.Text.Encoding.GetEncoding("UTF-8"),
+            Indent = true,
+            IndentChars = ("    "),
+            OmitXmlDeclaration = false
+        };
 
         XmlWriter writer = XmlWriter.Create(filePath, settings);
         writer.WriteStartDocument();
@@ -114,6 +116,56 @@ public class KRSInfoXMLScript : MonoBehaviour
 
     public void LoadKRSInfos()
     {
+        XmlDocument xmlDoc = new();
+        if (CheckFile())
+        {
+            xmlDoc.Load(filePath);
 
+            XmlNodeList kList = xmlDoc.GetElementsByTagName(
+                "KRSInfoEntry");
+
+            foreach (XmlNode kInfo in kList)
+            {
+                XmlNodeList kCon = kInfo.ChildNodes;
+                KRSIEntry newEntry = new();
+                foreach (XmlNode kItems in kCon)
+                {
+                    switch (kItems.Name)
+                    {
+                        case "KRSInfoCode":
+                            newEntry.krsInfoCode = kItems.InnerText;
+                            break;
+                        case "KRSInfoNumber":
+                            int.TryParse(kItems.InnerText, out int x);
+                            int num = x;
+                            newEntry.krsInfoNumber = num;
+                            break;
+                        case "KRSInfoSubjectCode":
+                            newEntry.krsInfoSubjectCode = kItems.InnerText;
+                            break;
+                        case "KRSInfoSubjectName":
+                            newEntry.krsInfoSubjectName = kItems.InnerText;
+                            break;
+                        case "KRSInfoTotalCredit":
+                            int.TryParse(kItems.InnerText, out int y);
+                            int tCred = y;
+                            newEntry.krsInfoTotalCredit = tCred;
+                            break;
+                        case "KRSCode":
+                            newEntry.krsCode = kItems.InnerText;
+                            break;
+                        default:
+                            Debug.Log("End of the data");
+                            break;
+                    }
+                }
+
+                KRSInfoManager.Instance.Struct.list.Add(newEntry);
+            }
+        }
+        else
+        {
+            InitializeFile();
+        }
     }
 }

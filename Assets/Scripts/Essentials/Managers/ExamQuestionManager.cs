@@ -18,18 +18,20 @@ public class ExamQuestionManager : MonoBehaviour
         string eQChoice1, string eQChoice2, string eQChoice3,
         string eQChoice4, int eQAnswer, string sCode)
     {
-        ExamQEntry newEntry = new();
-        newEntry.examQCode = eQCode;
-        newEntry.examQTerm = eQTerm;
-        newEntry.examQPhase = eQPhase;
-        newEntry.examQNumber = eQNumber;
-        newEntry.examQDescription = eQDescription;
-        newEntry.examQChoice1 = eQChoice1;
-        newEntry.examQChoice2 = eQChoice2;
-        newEntry.examQChoice3 = eQChoice3;
-        newEntry.examQChoice4 = eQChoice4;
-        newEntry.examQAnswer = eQAnswer;
-        newEntry.subjectCode = sCode;
+        ExamQEntry newEntry = new()
+        {
+            examQCode = eQCode,
+            examQTerm = eQTerm,
+            examQPhase = eQPhase,
+            examQNumber = eQNumber,
+            examQDescription = eQDescription,
+            examQChoice1 = eQChoice1,
+            examQChoice2 = eQChoice2,
+            examQChoice3 = eQChoice3,
+            examQChoice4 = eQChoice4,
+            examQAnswer = eQAnswer,
+            subjectCode = sCode
+        };
         Struct.list.Add(newEntry);
     }
 
