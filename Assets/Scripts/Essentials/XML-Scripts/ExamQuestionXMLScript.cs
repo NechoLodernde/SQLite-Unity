@@ -26,11 +26,13 @@ public class ExamQuestionXMLScript : MonoBehaviour
 
     public void InitializeFile()
     {
-        XmlWriterSettings settings = new();
-        settings.Encoding = System.Text.Encoding.GetEncoding("UTF-8");
-        settings.Indent = true;
-        settings.IndentChars = ("    ");
-        settings.OmitXmlDeclaration = false;
+        XmlWriterSettings settings = new()
+        {
+            Encoding = System.Text.Encoding.GetEncoding("UTF-8"),
+            Indent = true,
+            IndentChars = ("    "),
+            OmitXmlDeclaration = false
+        };
 
         XmlWriter writer = XmlWriter.Create(filePath, settings);
         writer.WriteStartDocument();
