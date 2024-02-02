@@ -9,7 +9,7 @@ using Con64 = System.Convert;
 
 public class PlayerDBScript : MonoBehaviour
 {
-    public static PlayerDBScript PlayerDBScriptInstance { get; private set; }
+    public static PlayerDBScript Instance { get; private set; }
 
     private readonly string dbName = "/PlayerData.s3db";
     private readonly string filepath = Application.dataPath + "/StreamingAssets/Database";
@@ -23,7 +23,7 @@ public class PlayerDBScript : MonoBehaviour
         string filePath = filepath + dbName;
         conn = "URI=file:" + filePath;
 
-        PlayerDBScriptInstance = this;
+        Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -75,7 +75,6 @@ public class PlayerDBScript : MonoBehaviour
 
     public int CountData()
     {
-        int countData = 0;
         using (dbConnect = new SqliteConnection(conn))
         {
             dbConnect.Open();
@@ -86,7 +85,7 @@ public class PlayerDBScript : MonoBehaviour
             dbCommand.CommandText = sqlQuery;
             string rawData = dbCommand.ExecuteScalar().ToString();
             int.TryParse(rawData, out int y);
-            countData = y;
+            int countData = y;
             return countData;
         }
     }
@@ -106,7 +105,7 @@ public class PlayerDBScript : MonoBehaviour
                 + pFaculty + "', '" + pStudyProgram + "', '" + pSemester + "', '"
                 + "IntroPKKMBQuestA1');";
 
-            PlayerDataManager.PlayerDataInstance.InsertNewData(randomPlayerID,
+            PlayerDataManager.Instance.InsertNewData(randomPlayerID,
                 pName, pGender, pFaculty, pStudyProgram, pSemester, 
                 "IntroPKKMBQuestA1");
 
@@ -163,13 +162,14 @@ public class PlayerDBScript : MonoBehaviour
         {
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
-            PlayerDataEntry rawData = ReturnPDE();
-            int playerSemNew = rawData.playerSemester + 1;
+            PlayerDEntry rawData = ReturnPDE();
+            int newPSem = rawData.playerSemester + 1;
             
-            sqlQuery = "UPDATE playerdata SET player_semester = '" + playerSemNew + 
+            sqlQuery = "UPDATE playerdata SET player_semester = '" + newPSem + 
                 "' WHERE player_id = '" + rawData.playerID + "';";
 
-            PlayerDataManager.PlayerDataInstance.UpdateSemester(playerSemNew);
+            PlayerDataManager.Instance.UpdateSemester(rawData.playerID,
+                newPSem);
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -183,14 +183,15 @@ public class PlayerDBScript : MonoBehaviour
         {
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
-            PlayerDataEntry rawData = ReturnPDE();
+            PlayerDEntry rawData = ReturnPDE();
             // Add reference string that will contain the new quest ID
-            string newQuestID = "ExampleNewID";
+            //string newQuestID = "ExampleNewID";
 
-            sqlQuery = "UPDATE playerdata SET active_quest_code = '" + newQuestID +
+            sqlQuery = "UPDATE playerdata SET active_quest_code = '" + prevQuestID +
                 "' WHERE player_id = '" + rawData.playerID + "';";
 
-            PlayerDataManager.PlayerDataInstance.UpdateQuestID(newQuestID);
+            PlayerDataManager.Instance.UpdateQuestID(rawData.playerID, 
+                prevQuestID);
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -204,7 +205,7 @@ public class PlayerDBScript : MonoBehaviour
         {
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
-            PlayerDataEntry rawData = ReturnPDE();
+            PlayerDEntry rawData = ReturnPDE();
 
             sqlQuery = "UPDATE playerdata SET player_name = '" + rawData.playerName + "'," +
                 " player_gender = '" + rawData.playerGender + "', " + 
@@ -235,10 +236,10 @@ public class PlayerDBScript : MonoBehaviour
         return randomBase64;
     }
 
-    public PlayerDataEntry ReturnPDE()
+    public PlayerDEntry ReturnPDE()
     {
-        PlayerDataEntry RawData;
-        RawData = PlayerDataManager.PlayerDataInstance.playerStruct.list.ToArray()[0];
+        PlayerDEntry RawData;
+        RawData = PlayerDataManager.Instance.Struct.list.ToArray()[0];
         return RawData;
     }
 }

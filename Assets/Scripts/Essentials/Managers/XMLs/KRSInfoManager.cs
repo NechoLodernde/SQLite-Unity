@@ -116,11 +116,13 @@ public class KRSInfoManager : MonoBehaviour
     }
 }
 
+[System.Serializable]
 public class KRSIStruct
 {
     public List<KRSIEntry> list = new();
 }
 
+[System.Serializable]
 public class KRSIEntry
 {
     public string krsInfoCode;

@@ -38,8 +38,8 @@ public class TestingScripts : MonoBehaviour
 
     private void AwakePlayerData()
     {
-        PlayerDBScript.PlayerDBScriptInstance.CreateDB();
-        PlayerDBScript.PlayerDBScriptInstance.DeleteDB();
+        PlayerDBScript.Instance.CreateDB();
+        PlayerDBScript.Instance.DeleteDB();
     }
 
     private void AwakeInventoryData()
@@ -58,21 +58,21 @@ public class TestingScripts : MonoBehaviour
     {
         StartCoroutine(LoadingTime());
 
-        PlayerDBScript.PlayerDBScriptInstance.AddPlayer("Vanitas",
+        PlayerDBScript.Instance.AddPlayer("Vanitas",
             "Perempuan", "Fakultas Teknologi Informasi",
             "Perpustakaan & Sains Informasi", 1);
 
-        PlayerDBScript.PlayerDBScriptInstance.AddPlayer("Misono Mika",
+        PlayerDBScript.Instance.AddPlayer("Misono Mika",
             "Perempuan", "Fakultas Teknik",
             "Teknik Nuklir", 1);
 
         Debug.Log("Total number of data: " +
-            PlayerDBScript.PlayerDBScriptInstance.CountData());
+            PlayerDBScript.Instance.CountData());
         // PlayerDBScript.PlayerDBScriptInstance.LoadPlayers();
         sentence_ui.text = "";
 
-        foreach (PlayerDataEntry players in 
-            PlayerDataManager.PlayerDataInstance.playerStruct.list)
+        foreach (PlayerDEntry players in 
+            PlayerDataManager.Instance.Struct.list)
         {
             sentence_ui.text += "ID: " + players.playerID + "\n";
             sentence_ui.text += "Name: " + players.playerName + "\n";

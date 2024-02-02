@@ -6,7 +6,7 @@ using Mono.Data.Sqlite;
 
 public class AchievementDBScript : MonoBehaviour
 {
-    public static AchievementDBScript AchievementDBInstance { get; private set; }
+    public static AchievementDBScript Instance { get; private set; }
 
     private readonly string dbName = "/Achievement.s3db";
     private readonly string refName = "/AchievementList.s3db";
@@ -28,7 +28,7 @@ public class AchievementDBScript : MonoBehaviour
         string refFilePath = refFilepath + refName;
         refConn = "URI=file:" + refFilePath;
 
-        AchievementDBInstance = this;
+        Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -121,7 +121,7 @@ public class AchievementDBScript : MonoBehaviour
                             "VALUES ('" + aID + "', '" + totalAchievement +
                             "', '" + aName + "', '" + text + "');";
 
-                        AchievementManager.AchievementInstance.InsertNewData(
+                        AchievementManager.Instance.InsertNewData(
                             aID, totalAchievement, aName, "Congrats!");
 
                         dbCommand.CommandText = sqlQuery;
@@ -144,17 +144,119 @@ public class AchievementDBScript : MonoBehaviour
             Debug.Log("Input id: " + prevAID);
             sqlQuery = "DELETE FROM achievement WHERE " +
                 "achievement_id='" + prevAID + "';";
-            AchievementManager.AchievementInstance.DeleteData(prevAID);
+            AchievementManager.Instance.DeleteData(prevAID);
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
         }
         dbConnect.Close();
     }
 
+    public void UpdateAID(string prevAID, string newAID)
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            AchievementEntry[] rawData = ReturnAEArray();
+
+            foreach (AchievementEntry entry in rawData)
+            {
+                if (entry.achievementID.Equals(prevAID))
+                {
+                    sqlQuery = "UPDATE achievement SET achievement_id = '" +
+                    newAID + "' WHERE achievement_id = '" + prevAID + "';";
+
+                    AchievementManager.Instance.UpdateAID(prevAID, newAID);
+                    dbCommand.CommandText = sqlQuery;
+                    dbCommand.ExecuteScalar();
+                    break;
+                }
+            }
+            dbConnect.Close();
+        }
+    }
+
+    public void UpdateANumber(string prevAID, int newANumber)
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            AchievementEntry[] rawData = ReturnAEArray();
+
+            foreach (AchievementEntry entry in rawData)
+            {
+                if (entry.achievementID.Equals(prevAID))
+                {
+                    sqlQuery = "UPDATE achievement SET achievement_number = '" +
+                        newANumber + "' WHERE achievement_id = '" + prevAID + "';";
+
+                    AchievementManager.Instance.UpdateANumber(prevAID, newANumber);
+                    dbCommand.CommandText = sqlQuery;
+                    dbCommand.ExecuteScalar();
+                    break;
+                }
+            }
+            dbConnect.Close();
+        }
+    }
+
+    public void UpdateAName(string prevAID, string newAName)
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            AchievementEntry[] rawData = ReturnAEArray();
+            
+            foreach (AchievementEntry entry in rawData)
+            {
+                if (entry.achievementID.Equals(prevAID))
+                {
+                    sqlQuery = "UPDATE achievement SET achievement_name = '" +
+                        newAName + "' WHERE achievement_id = '" + prevAID + "';";
+
+                    AchievementManager.Instance.UpdateAName(prevAID, newAName);
+                    dbCommand.CommandText = sqlQuery;
+                    dbCommand.ExecuteScalar();
+                    break;
+                }
+            }
+
+            dbConnect.Close();
+        }
+    }
+
+    public void UpdateAUText(string prevAID, string newAUText)
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            AchievementEntry[] rawData = ReturnAEArray();
+
+            foreach (AchievementEntry entry in rawData)
+            {
+                if (entry.achievementID.Equals(prevAID))
+                {
+                    sqlQuery = "UPDATE achievement SET achievement_unlocked_text = '" +
+                        newAUText + "' WHERE achievement_id = '" + prevAID + "';";
+
+                    AchievementManager.Instance.UpdateAUText(prevAID, newAUText);
+                    dbCommand.CommandText = sqlQuery;
+                    dbCommand.ExecuteScalar();
+                    break;
+                }
+            }
+
+            dbConnect.Close();
+        }
+    }
+
     public AchievementEntry[] ReturnAEArray()
     {
         AchievementEntry[] RawData;
-        RawData = AchievementManager.AchievementInstance.achievementStruct.list.ToArray();
+        RawData = AchievementManager.Instance.Struct.list.ToArray();
         return RawData;
     }
 }
