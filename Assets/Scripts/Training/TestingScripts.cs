@@ -50,8 +50,8 @@ public class TestingScripts : MonoBehaviour
 
     private void AwakePlayerInventoryData()
     {
-        PlayerInventoryDBScript.PlayerInvDBInstance.CreateDB();
-        PlayerInventoryDBScript.PlayerInvDBInstance.DeleteDB();
+        PlayerInventoryDBScript.Instance.CreateDB();
+        PlayerInventoryDBScript.Instance.DeleteDB();
     }
 
     private void TestingPlayerData()
@@ -120,16 +120,16 @@ public class TestingScripts : MonoBehaviour
         foreach (InventoryDataEntry inv 
             in InventoryDataManager.Instance.Struct.list)
         {
-            PlayerInventoryDBScript.PlayerInvDBInstance.AddInventory(
+            PlayerInventoryDBScript.Instance.AddInventory(
                 inv.inventoryID);
         }
 
         Debug.Log("Total number of data: " +
-            PlayerInventoryDBScript.PlayerInvDBInstance.CountData());
+            PlayerInventoryDBScript.Instance.CountData());
         sentence_ui.text = "";
 
         foreach (PlayerInventoryEntry inv in
-            PlayerInventoryManager.PlayerInventoryInstance.inventoryStruct.list)
+            PlayerInventoryManager.Instance.Struct.list)
         {
             sentence_ui.text += "ID: " + inv.inventoryID + "\n";
             sentence_ui.text += "Inventory Number: " +
@@ -141,7 +141,7 @@ public class TestingScripts : MonoBehaviour
         }
 
         PlayerInventoryEntry[] testDelete =
-            PlayerInventoryDBScript.PlayerInvDBInstance.ReturnPIEArray();
+            PlayerInventoryDBScript.Instance.ReturnPIEArray();
         foreach(PlayerInventoryEntry inv in testDelete)
         {
             Debug.Log(inv.inventoryID);
@@ -150,7 +150,7 @@ public class TestingScripts : MonoBehaviour
             Debug.Log(inv.inventoryUsableCode);
         }
         //PlayerInventoryDBScript.PlayerInvDBInstance.DeleteInventory(testDelete[0].inventoryID);
-        PlayerInventoryManager.PlayerInventoryInstance.UpdateUsableCode(
+        PlayerInventoryManager.Instance.UpdateUsableCode(
             testDelete[0].inventoryID, 0);
     }
 

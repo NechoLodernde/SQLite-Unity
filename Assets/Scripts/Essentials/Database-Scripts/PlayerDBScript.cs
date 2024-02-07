@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -86,6 +85,7 @@ public class PlayerDBScript : MonoBehaviour
             string rawData = dbCommand.ExecuteScalar().ToString();
             int.TryParse(rawData, out int y);
             int countData = y;
+            dbConnect.Close();
             return countData;
         }
     }
@@ -97,17 +97,56 @@ public class PlayerDBScript : MonoBehaviour
         {
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
-            string randomPlayerID = RandomBaseString64();
+            string randPID = RandomBaseString64();
             sqlQuery = "INSERT INTO playerdata (player_id, player_name, " +
                 "player_gender, player_faculty, player_study_program," +
                 "player_semester, active_quest_code) VALUES " +
-                "('" + randomPlayerID + "', '" + pName + "', '" + pGender +"', '"
+                "('" + randPID + "', '" + pName + "', '" + pGender +"', '"
                 + pFaculty + "', '" + pStudyProgram + "', '" + pSemester + "', '"
                 + "IntroPKKMBQuestA1');";
 
-            PlayerDataManager.Instance.InsertNewData(randomPlayerID,
+            PlayerDataManager.Instance.InsertNewData(randPID,
                 pName, pGender, pFaculty, pStudyProgram, pSemester, 
                 "IntroPKKMBQuestA1");
+
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
+            dbConnect.Close();
+        }
+    }
+
+    public void DeletePlayer(string prevPID)
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            Debug.Log("Input id: " + prevPID);
+            sqlQuery = "DELETE FROM playerdata WHERE " +
+                "player_id='" + prevPID + "';";
+            PlayerDataManager.Instance.DeleteData(prevPID);
+            dbCommand.CommandText = sqlQuery;
+            dbCommand.ExecuteScalar();
+        }
+
+        dbConnect.Close();
+    }
+
+    public void SavePlayerData()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            PlayerDEntry rawData = ReturnPDE();
+
+            sqlQuery = "UPDATE playerdata SET player_name = '" + rawData.playerName + "'," +
+                " player_gender = '" + rawData.playerGender + "', " +
+                "player_faculty = '" + rawData.playerFaculty + "', " +
+                "player_study_program = '" + rawData.playerStudyProgram + "', " +
+                "player_semester = '" + rawData.playerSemester + "', " +
+                "active_quest_code = '" + rawData.activeQuestCode + "' " +
+                "WHERE player_id = '" + rawData.playerID + "';";
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
@@ -153,6 +192,7 @@ public class PlayerDBScript : MonoBehaviour
 
             dbReader.Close();
         }
+
         dbConnect.Close();
     }
 
@@ -192,28 +232,6 @@ public class PlayerDBScript : MonoBehaviour
 
             PlayerDataManager.Instance.UpdateQuestID(rawData.playerID, 
                 prevQuestID);
-
-            dbCommand.CommandText = sqlQuery;
-            dbCommand.ExecuteScalar();
-            dbConnect.Close();
-        }
-    }
-
-    public void SavePlayerData()
-    {
-        using (dbConnect = new SqliteConnection(conn))
-        {
-            dbConnect.Open();
-            dbCommand = dbConnect.CreateCommand();
-            PlayerDEntry rawData = ReturnPDE();
-
-            sqlQuery = "UPDATE playerdata SET player_name = '" + rawData.playerName + "'," +
-                " player_gender = '" + rawData.playerGender + "', " + 
-                "player_faculty = '" + rawData.playerFaculty + "', "+ 
-                "player_study_program = '" + rawData.playerStudyProgram + "', " +
-                "player_semester = '" + rawData.playerSemester + "', " +
-                "active_quest_code = '" + rawData.activeQuestCode + "' " +
-                "WHERE player_id = '" + rawData.playerID + "';";
 
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();

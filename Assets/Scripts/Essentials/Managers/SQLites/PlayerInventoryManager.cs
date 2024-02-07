@@ -8,12 +8,12 @@ using System.IO;
 
 public class PlayerInventoryManager : MonoBehaviour
 {
-    public static PlayerInventoryManager PlayerInventoryInstance { get; private set; }
-    public PlayerInventoryStruct inventoryStruct;
+    public static PlayerInventoryManager Instance { get; private set; }
+    public PlayerInventoryStruct Struct;
 
     private void Awake()
     {
-        PlayerInventoryInstance = this;
+        Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -26,28 +26,70 @@ public class PlayerInventoryManager : MonoBehaviour
         newEntry.inventoryNumber = invNumber;
         newEntry.inventoryName = invName;
         newEntry.inventoryUsableCode = invUseCode;
-        inventoryStruct.list.Add(newEntry);
+        Struct.list.Add(newEntry);
     }
 
     public void DeleteData(string prevInvID)
     {     
-        foreach (PlayerInventoryEntry inv in inventoryStruct.list)
+        foreach (PlayerInventoryEntry inv in Struct.list)
         {
             if (inv.inventoryID.Equals(prevInvID))
             {
-                inventoryStruct.list.Remove(inv);
+                Struct.list.Remove(inv);
                 break;
             }
         }     
     }
 
+    public void ClearList()
+    {
+        Struct.list.Clear();
+    }
+
+    public void UpdateInvID(string prevInvID, string newIntID)
+    {
+        foreach (PlayerInventoryEntry entry in Struct.list)
+        {
+            if (prevInvID.Equals(entry.inventoryID))
+            {
+                entry.inventoryID = newIntID;
+                break;
+            }
+        }
+    }
+
+    public void UpdateInvNumber(string prevInvID, int newInvNumber)
+    {
+        foreach (PlayerInventoryEntry entry in Struct.list)
+        {
+            if (prevInvID.Equals(entry.inventoryID))
+            {
+                entry.inventoryNumber = newInvNumber;
+                break;
+            }
+        }
+    }
+
+    public void UpdateInvName(string prevInvID, string newInvName)
+    {
+        foreach (PlayerInventoryEntry entry in Struct.list)
+        {
+            if (prevInvID.Equals(entry.inventoryID))
+            {
+                entry.inventoryName = newInvName;
+                break;
+            }
+        }
+    }
+
     public void UpdateUsableCode (string prevInvID, int newUseID)
     {
-        foreach (PlayerInventoryEntry inv in inventoryStruct.list)
+        foreach (PlayerInventoryEntry entry in Struct.list)
         {
-            if (prevInvID.Equals(inv.inventoryID))
+            if (prevInvID.Equals(entry.inventoryID))
             {
-                inv.inventoryUsableCode = newUseID;
+                entry.inventoryUsableCode = newUseID;
+                break;
             }
         }
     }

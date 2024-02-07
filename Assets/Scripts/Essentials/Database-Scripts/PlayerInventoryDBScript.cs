@@ -6,7 +6,7 @@ using Mono.Data.Sqlite;
 
 public class PlayerInventoryDBScript : MonoBehaviour
 {
-    public static PlayerInventoryDBScript PlayerInvDBInstance { get; private set; }
+    public static PlayerInventoryDBScript Instance { get; private set; }
 
     private readonly string dbName = "/PlayerInventory.s3db";
     private readonly string refName = "/InventoryData.s3db";
@@ -28,7 +28,7 @@ public class PlayerInventoryDBScript : MonoBehaviour
         string refFilePath = refFilepath + refName;
         refConn = "URI=file:" + refFilePath;
 
-        PlayerInvDBInstance = this;
+        Instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -124,18 +124,20 @@ public class PlayerInventoryDBScript : MonoBehaviour
                         "inventory_usable_code) VALUES ('" + invID + "', '" +
                         totalInventory + "', '" + invName + "', '" + invUse + "');";
 
-                        PlayerInventoryManager.PlayerInventoryInstance.InsertNewData(
+                        PlayerInventoryManager.Instance.InsertNewData(
                             invID, totalInventory, invName, invUse);
 
                         dbCommand.CommandText = sqlQuery;
                         dbCommand.ExecuteScalar();
                     }
+
                     dbConnect.Close();
                 }
-                
             }
+
             dbReader.Close();
         }
+
         dbRefConnect.Close();
     }
 
@@ -148,17 +150,34 @@ public class PlayerInventoryDBScript : MonoBehaviour
             Debug.Log("Input id: " + prevInvID);
             sqlQuery = "DELETE FROM playerinventory WHERE" +
                 " inventory_data_code='" + prevInvID + "';";
-            PlayerInventoryManager.PlayerInventoryInstance.DeleteData(prevInvID);
+            PlayerInventoryManager.Instance.DeleteData(prevInvID);
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
         }
+
         dbConnect.Close();
+    }
+
+    public void SavePlayerInventories()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+
+        }
+    }
+
+    public void LoadPlayerInventories()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+
+        }
     }
 
     public PlayerInventoryEntry[] ReturnPIEArray()
     {
         PlayerInventoryEntry[] RawData;
-        RawData = PlayerInventoryManager.PlayerInventoryInstance.inventoryStruct.list.ToArray();
+        RawData = PlayerInventoryManager.Instance.Struct.list.ToArray();
         return RawData;
     }
 }

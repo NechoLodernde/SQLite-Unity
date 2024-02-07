@@ -37,6 +37,8 @@ public class AchievementDBScript : MonoBehaviour
     {
         dbConnect = new SqliteConnection(conn);
         dbRefConnect = new SqliteConnection(refConn);
+
+        CreateDB();
     }
 
     public void CreateDB()
@@ -122,16 +124,19 @@ public class AchievementDBScript : MonoBehaviour
                             "', '" + aName + "', '" + text + "');";
 
                         AchievementManager.Instance.InsertNewData(
-                            aID, totalAchievement, aName, "Congrats!");
+                            aID, totalAchievement, aName, text);
 
                         dbCommand.CommandText = sqlQuery;
                         dbCommand.ExecuteScalar();
                     }
+
                     dbConnect.Close();
                 }
             }
+
             dbReader.Close();
         }
+
         dbRefConnect.Close();
     }
 
@@ -148,6 +153,74 @@ public class AchievementDBScript : MonoBehaviour
             dbCommand.CommandText = sqlQuery;
             dbCommand.ExecuteScalar();
         }
+
+        dbConnect.Close();
+    }
+
+    public void SaveAchievements()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            AchievementEntry[] rawData = ReturnAEArray();
+
+            foreach (AchievementEntry entry in rawData)
+            {
+                sqlQuery = "UPDATE achievement SET achievement_id='" +
+                    entry.achievementID + "', achievement_number='" +
+                    entry.achievementNumber + "', achievement_name='" +
+                    entry.achievementName + "', achievement_unlocked_text='"
+                    + entry.achievementUnlockedText + "' WHERE achievement_id='"
+                    + entry.achievementID +"';";
+                
+                dbCommand.CommandText = sqlQuery;
+                dbCommand.ExecuteScalar();
+            }
+
+            dbConnect.Close();
+        }
+    }
+
+    public void LoadAchievements()
+    {
+        using (dbConnect = new SqliteConnection(conn))
+        {
+            dbConnect.Open();
+            dbCommand = dbConnect.CreateCommand();
+            sqlQuery = "SELECT * FROM achievement;";
+            dbCommand.CommandText = sqlQuery;
+            dbReader = dbCommand.ExecuteReader();
+            
+            while (dbReader.Read())
+            {
+                AchievementEntry newEntry = new();
+                string aID, aName, aUText;
+                int aNumber;
+                aID = "" + dbReader["achievement_id"];
+                aName = "" + dbReader["achievement_name"];
+                aUText = "" + dbReader["achievement_unlocked_text"];
+
+                int.TryParse(("" + dbReader["achievement_number"]), out int x);
+                aNumber = x;
+                Debug.Log("The Data:");
+                Debug.Log("Achievement ID: " + aID);
+                Debug.Log("Achievement Number: " + aNumber);
+                Debug.Log("Achievement Name: " + aName);
+                Debug.Log("Achievement Unlocked Text: " + aUText);
+                Debug.Log("End of Data");
+
+                newEntry.achievementID = aID;
+                newEntry.achievementNumber = aNumber;
+                newEntry.achievementName = aName;
+                newEntry.achievementUnlockedText = aUText;
+
+                AchievementManager.Instance.Struct.list.Add(newEntry);
+            }
+
+            dbReader.Close();
+        }
+
         dbConnect.Close();
     }
 
@@ -172,6 +245,7 @@ public class AchievementDBScript : MonoBehaviour
                     break;
                 }
             }
+
             dbConnect.Close();
         }
     }
@@ -197,6 +271,7 @@ public class AchievementDBScript : MonoBehaviour
                     break;
                 }
             }
+
             dbConnect.Close();
         }
     }
