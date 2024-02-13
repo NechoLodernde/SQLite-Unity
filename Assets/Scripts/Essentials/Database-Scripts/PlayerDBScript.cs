@@ -132,7 +132,7 @@ public class PlayerDBScript : MonoBehaviour
         dbConnect.Close();
     }
 
-    public void SavePlayerData()
+    public void SavePlayer()
     {
         using (dbConnect = new SqliteConnection(conn))
         {

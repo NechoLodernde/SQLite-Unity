@@ -189,7 +189,7 @@ public class PlayerInventoryDBScript : MonoBehaviour
         {
             dbConnect.Open();
             dbCommand = dbConnect.CreateCommand();
-            sqlQuery = "SELECT * FROM playerinventory";
+            sqlQuery = "SELECT * FROM playerinventory;";
             dbCommand.CommandText = sqlQuery;
             dbReader = dbCommand.ExecuteReader();
 
