@@ -21,8 +21,15 @@ public class CurriculumXMLScript : MonoBehaviour
 
     private void Awake()
     {
-        filePath = Application.dataPath +
-            @"/StreamingAssets/XML/Curriculum.xml";
+        //filePath = Application.dataPath +
+        //    @"/StreamingAssets/XML/Curriculum.xml";
+        filePath = Application.persistentDataPath +
+            @"/XML/Curriculum.xml";
+        string dirPath = Application.persistentDataPath +
+            @"/XML";
+
+        GenerateDirectory(dirPath);
+
         CurriculumXMLInstance = this;
         if (!CheckFile())
         {
@@ -30,6 +37,15 @@ public class CurriculumXMLScript : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    public void GenerateDirectory(string dirPath)
+    {
+        if (!Directory.Exists(dirPath))
+        {
+            Directory.CreateDirectory(dirPath);
+            Debug.Log("Directory Created!");
+        }
     }
 
     public void InitializeFile()
@@ -203,5 +219,184 @@ public class CurriculumXMLScript : MonoBehaviour
         {
             InitializeFile();
         }
+    }
+
+    public void RemoveData(string targetCode)
+    {
+        if (CountData() >= 1)
+        {
+            XmlDocument xmlDoc = new();
+
+            if (CheckFile())
+            {
+                xmlDoc.Load(filePath);
+
+                XmlNodeList nodeList = xmlDoc.GetElementsByTagName("CurriculumEntry");
+
+                foreach (XmlNode nodeInfo in nodeList)
+                {
+                    XmlNodeList nodeContent = nodeInfo.ChildNodes;
+
+                    foreach (XmlNode nodeItem in nodeContent)
+                    {
+                        if (nodeItem.Name.Equals("SubjectCode"))
+                        {
+                            if (CodeMatches(nodeItem.InnerText, targetCode))
+                            {
+                                XmlNode parent = nodeInfo.ParentNode;
+
+                                parent.RemoveChild(nodeInfo);
+
+                                string newXML = xmlDoc.OuterXml;
+
+                                Debug.Log(newXML);
+
+                                xmlDoc.Save(filePath);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning("There's no file detected.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("There's no data on the xml file.");
+        }
+    }
+
+    public void ChangeCode(string targetCode, string data)
+    {
+        if (CountData() >= 1)
+        {
+            XmlDocument xmlDoc = new();
+
+            if (CheckFile())
+            {
+                xmlDoc.Load(filePath);
+
+                XmlNodeList nodeList = xmlDoc.GetElementsByTagName("CurriculumEntry");
+                
+                foreach (XmlNode nodeInfo in nodeList)
+                {
+                    XmlNodeList nodeContent = nodeInfo.ChildNodes;
+
+                    foreach (XmlNode nodeItem in nodeContent)
+                    {
+                        if (nodeItem.Name.Equals("SubjectCode"))
+                        {
+                            if (CodeMatches(nodeItem.InnerText, targetCode))
+                            {
+                                nodeItem.InnerText = data;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                xmlDoc.Save(filePath);
+            }
+            else
+            {
+                Debug.LogWarning("There's no file detected.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("There's no data on the xml file.");
+        }
+    }
+
+    public void ChangeData(string targetCode, string targetItem, string data)
+    {
+        if (CountData() >= 1)
+        {
+            XmlDocument xmlDoc = new();
+
+            if (CheckFile())
+            {
+                xmlDoc.Load(filePath);
+
+                XmlNodeList nodeList = xmlDoc.GetElementsByTagName("CurriculumEntry");
+
+                foreach (XmlNode nodeInfo in nodeList)
+                {
+                    XmlNodeList nodeContent = nodeInfo.ChildNodes;
+
+                    string prevCode = "";
+                    string targetedItem = targetItem;
+
+                    foreach (XmlNode nodeItem in nodeContent)
+                    {
+                        if (nodeItem.Name.Equals("SubjectCode"))
+                        {
+                            if (nodeItem.InnerText.Equals(targetCode))
+                                prevCode = nodeItem.InnerText;
+                        }
+                        else if (nodeItem.Name.Equals(targetItem))
+                        {
+                            if (CodeMatches(prevCode, targetCode))
+                                nodeItem.InnerText = data;
+                        }
+                    }
+                }
+
+                xmlDoc.Save(filePath);
+            }
+            else
+            {
+                Debug.LogWarning("There's no file detected.");
+            }
+        } 
+        else
+        {
+            Debug.LogWarning("There's no data on the xml file.");
+        }
+    }
+
+    public int CountData()
+    {
+        int count = 0;
+        XmlDocument xmlDoc = new();
+
+        if (CheckFile())
+        {
+            xmlDoc.Load(filePath);
+
+            XmlNodeList nodeList = xmlDoc.GetElementsByTagName("CurriculumEntry");
+
+            foreach (XmlNode nodeInfo in nodeList)
+            {
+                XmlNodeList nodeContent = nodeInfo.ChildNodes;
+
+                foreach (XmlNode noteItem in nodeContent)
+                {
+                    switch (noteItem.Name)
+                    {
+                        case "SubjectCode":
+                            count++;
+                            break;
+
+                        default:
+                            Debug.Log("End of line.");
+                            break;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public bool CodeMatches(string dataCode, string targetCode)
+    {
+        if (dataCode.Equals(targetCode))
+            return true;
+
+        return false;
     }
 }

@@ -44,6 +44,7 @@ public class CurriculumManager : MonoBehaviour
             if (curri.subjectCode.Equals(prevSCode))
             {
                 curriculumStruct.list.Remove(curri);
+                CurriculumXMLScript.CurriculumXMLInstance.RemoveData(prevSCode);
                 break;
             }
         }
@@ -63,6 +64,8 @@ public class CurriculumManager : MonoBehaviour
             if (prevSCode.Equals(curri.subjectCode))
             {
                 curri.subjectCode = newSCode;
+                CurriculumXMLScript.CurriculumXMLInstance.ChangeCode
+                    (prevSCode, newSCode);
                 break;
             }
         }
@@ -77,6 +80,8 @@ public class CurriculumManager : MonoBehaviour
             if (prevSCode.Equals(curri.subjectCode))
             {
                 curri.subjectName = newSName;
+                CurriculumXMLScript.CurriculumXMLInstance.ChangeData
+                    (prevSCode, "SubjectName", newSName);
                 break;
             }
         }
@@ -91,6 +96,8 @@ public class CurriculumManager : MonoBehaviour
             if (prevSCode.Equals(curri.subjectCode))
             {
                 curri.subjectTotalCredit = newTotalCredit;
+                CurriculumXMLScript.CurriculumXMLInstance.ChangeData
+                    (prevSCode, "SubjectTotalCredit", newTotalCredit.ToString());
                 break;
             }
         }
@@ -105,20 +112,24 @@ public class CurriculumManager : MonoBehaviour
             if (prevSCode.Equals(curri.subjectCode))
             {
                 curri.subjectDuration = newSubjectDuration;
+                CurriculumXMLScript.CurriculumXMLInstance.ChangeData
+                    (prevSCode, "SubjectDuration", newSubjectDuration.ToString());
                 break;
             }
         }
     }
 
     public void UpdateSubjectPrerequisite(
-        string prevSCode, string newSP)
+        string prevSCode, string newSPCode)
     {
         foreach (CurriculumEntry curri in
             curriculumStruct.list)
         {
             if (prevSCode.Equals(curri.subjectCode))
             {
-                curri.subjectPrerequisiteCode = newSP;
+                curri.subjectPrerequisiteCode = newSPCode;
+                CurriculumXMLScript.CurriculumXMLInstance.ChangeData
+                    (prevSCode, "SubjectPrerequisiteCode", newSPCode);
                 break;
             }
         }
@@ -133,6 +144,8 @@ public class CurriculumManager : MonoBehaviour
             if (prevSCode.Equals(curri.subjectCode))
             {
                 curri.subjectSemester = newSSemester;
+                CurriculumXMLScript.CurriculumXMLInstance.ChangeData
+                    (prevSCode, "SubjectSemester", newSSemester.ToString());
                 break;
             }
         }
@@ -147,6 +160,8 @@ public class CurriculumManager : MonoBehaviour
             if (prevSCode.Equals(curri.subjectCode))
             {
                 curri.subjectYear = newSYear;
+                CurriculumXMLScript.CurriculumXMLInstance.ChangeData
+                    (prevSCode, "SubjectYear", newSYear);
                 break;
             }
         }
@@ -161,6 +176,8 @@ public class CurriculumManager : MonoBehaviour
             if (prevSCode.Equals(curri.subjectCode))
             {
                 curri.subjectRoomCode = newSRoom;
+                CurriculumXMLScript.CurriculumXMLInstance.ChangeData
+                    (prevSCode, "SubjectRoomCode", newSRoom);
                 break;
             }
         }

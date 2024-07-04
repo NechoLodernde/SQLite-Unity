@@ -213,7 +213,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 288561253}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc558b94191757c41a3eb8373acd51d0, type: 3}
   m_Name: 
@@ -928,7 +928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ac4261717b0954dbe3cb04e4019b72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStruct:
+  Struct:
     list: []
 --- !u!114 &1845986626
 MonoBehaviour:
@@ -942,7 +942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c8c8e35a9ae5264fb99b91a005ecb5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryStruct:
+  Struct:
     list: []
 --- !u!4 &1845986627
 Transform:
@@ -971,7 +971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6f7bf6fdd8a49447aa7332653c2da37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryStruct:
+  Struct:
     list: []
 --- !u!114 &1845986629
 MonoBehaviour:

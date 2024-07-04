@@ -160,26 +160,50 @@ public class TestingScripts : MonoBehaviour
 
         //CurriculumXMLScript.CurriculumXMLInstance.LoadCurriculums();
 
-        CurriculumManager.CurriculumManagerInstance.
-            InsertNewData("KK140075_22",
-            "Pengembangan Permainan Digital",
-            "FTI", "Teknik Infomratika", 15,
-            750, "KK140056_18", 5, "Ganjil",
-            "UY.05R003");
-        CurriculumManager.CurriculumManagerInstance.
-            InsertNewData("KK140056_18",
-            "Pemrograman Berorientasi Objek",
-            "FTI", "Teknik Informatika", 4,
-            200, "KK140053_18", 3, "Ganjil",
-            "FO");
+        if (CurriculumXMLScript.CurriculumXMLInstance.CountData() <= 0)
+        {
+            CurriculumManager.CurriculumManagerInstance.
+                InsertNewData("KK140075_22",
+                "Pengembangan Permainan Digital",
+                "FTI", "Teknik Informatika", 15,
+                750, "KK140056_18", 5, "Ganjil",
+                "UY.05R003");
+            CurriculumManager.CurriculumManagerInstance.
+                InsertNewData("KK140056_18",
+                "Pemrograman Berorientasi Objek",
+                "FTI", "Teknik Informatika", 4,
+                200, "KK140053_18", 3, "Ganjil",
+                "FO");
+
+            CurriculumXMLScript.CurriculumXMLInstance.
+                SaveCurriculums();
+        }
+        else
+        {
+            CurriculumXMLScript.CurriculumXMLInstance.LoadCurriculums();
+        }
 
         Debug.Log(" Total number of data in list: " +
             CurriculumManager.CurriculumManagerInstance.
             curriculumStruct.list.Count);
         sentence_ui.text = "";
 
-        CurriculumXMLScript.CurriculumXMLInstance.
-            SaveCurriculums();
+        CurriculumManager.CurriculumManagerInstance.UpdateSubjectCode(
+            "KK140075_22", "KKK727420_69");
+
+        CurriculumManager.CurriculumManagerInstance.UpdateSubjectName(
+            "KKK727420_69", "Kelas Pace");
+
+        CurriculumManager.CurriculumManagerInstance.DeleteData(
+            "KKK727420_69");
+
+        foreach (CurriculumEntry curr in CurriculumManager.CurriculumManagerInstance.curriculumStruct.list)
+        {
+            sentence_ui.text += "Code: " + curr.subjectCode + "\n";
+            sentence_ui.text += "Name: " + curr.subjectName + "\n";
+            sentence_ui.text += "Prerequisite code: " + curr.subjectPrerequisiteCode + "\n";
+            sentence_ui.text += "Semester: " + curr.subjectSemester + "\n";
+        }
 
         //foreach (PlayerDataEntry players in
         //    PlayerDataManager.PlayerDataInstance.playerStruct.list)
